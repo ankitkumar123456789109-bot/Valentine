@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>open my heart · a valentine journey</title>
+  <!-- elegant font pairing: script for finale, soft sans for everything else -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Quicksand:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    /* ===== style.css ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(145deg, #ffe6f0 0%, #ffd9e8 40%, #fad0dd 100%);
+      font-family: 'Quicksand', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      position: relative;
+      overflow-x: hidden;
+      transition: background 0.8s ease;
+    }
+
+    body.dreamy-bg {
+      background: radial-gradient(circle at 30% 40%, #ffe2ec, #fccfd9, #fbb1c0);
+    }
+
+    /* floating hearts background (soft particles) */
+    .heart-particle {
+      position: fixed;
+      color: rgba(255, 182, 193, 0.25);
+      font-size: 2.2rem;
+      user-select: none;
+      pointer-events: none;
+      z-index: 0;
+      animation: floatUp 12s linear infinite;
+      bottom: -10vh;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) rotate(0deg); opacity: 0.2; }
+      50% { opacity: 0.5; }
+      100% { transform: translateY(-110vh) rotate(20deg); opacity: 0; }
+    }
+
+    /* main container – everything sits here */
+    .stage {
+      width: 100%;
+      max-width: 1000px;
+      background: rgba(255, 245, 240, 0.3);
+      backdrop-filter: blur(2px);
+      border-radius: 3rem 3rem 2rem 2rem;
+      box-shadow: 0 30px 50px rgba(180, 60, 80, 0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+      position: relative;
+      z-index: 10;
+      transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* ----- LANDING CARD ----- */
+    .greeting-card {
+      background: #fffcf9;
+      width: 100%;
+      max-width: 480px;
+      aspect-ratio: 3 / 4;
+      border-radius: 30px;
+      box-shadow: 0 20px 35px rgba(190, 70, 100, 0.3), 0 0 0 2px #ffe2e9 inset, 0 0 0 4px #ffffff80 inset;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      cursor: pointer;
+      transition: box-shadow 0.3s, transform 0.4s;
+      animation: glow-float 4s ease-in-out infinite;
+      position: relative;
+      transform-style: preserve-3d;
+      transform: perspective(1200px) rotateY(0deg);
+    }
+
+    @keyframes glow-float {
+      0% { transform: translateY(0) scale(1); box-shadow: 0 20px 35px rgba(200, 80, 110, 0.3), 0 0 0 3px #ffc1cc inset; }
+      50% { transform: translateY(-12px) scale(1.02); box-shadow: 0 35px 45px rgba(200, 70, 130, 0.4), 0 0 0 5px #ffb6c1 inset, 0 0 30px #ffb3b3; }
+      100% { transform: translateY(0) scale(1); box-shadow: 0 20px 35px rgba(200, 80, 110, 0.3), 0 0 0 3px #ffc1cc inset; }
+    }
+
+    .card-front-content {
+      transition: opacity 0.3s;
+    }
+
+    .greeting-card h1 {
+      font-size: 3.5rem;
+      font-weight: 300;
+      color: #a63b5b;
+      letter-spacing: 2px;
+      text-shadow: 2px 2px 0 #ffd9e2;
+      margin-bottom: 0.5rem;
+    }
+
+    .greeting-card .heart-big {
+      font-size: 5rem;
+      line-height: 1;
+      filter: drop-shadow(0 8px 12px #ef7a9e);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } }
+
+    /* card opening 3D effect */
+    .greeting-card.opened {
+      animation: none;
+      transform: perspective(1200px) rotateY(-180deg);
+      box-shadow: -10px 20px 40px rgba(0,0,0,0.1);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.7s, opacity 0.3s 0.4s;
+    }
+
+    /* inner content (hidden until card opens) */
+    .journey-content {
+  width: 100%;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.8rem;
+  animation: softAppear 1.2s ease forwards;
+  /* Add this line to allow natural expansion */
+  height: auto;
+}
+
+    @keyframes softAppear { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+
+    /* ----- SLIDESHOW ----- */
+    .slideshow-section {
+      width: 100%;
+      border-radius: 40px;
+      background: rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(8px);
+      padding: 2rem 1rem 1.5rem;
+      box-shadow: 0 15px 30px rgba(150, 60, 70, 0.2);
+    }
+
+    .gallery-container {
+  position: relative;
+  width: 100%;
+  max-width: 400px;  /* Smaller width for vertical */
+  margin: 0 auto;
+  aspect-ratio: 4 / 5;  /* Instagram portrait ratio */
+  overflow: hidden;
+  border-radius: 24px;
+  box-shadow: 0 20px 30px #ffb7c5;
+}
+
+    .slide-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 1.2s ease-in-out;
+      border-radius: 32px;
+    }
+
+    .slide-image.active {
+      opacity: 1;
+      z-index: 5;
+    }
+
+    /* soft navigation dots (minimal) */
+    .slide-dots {
+      display: flex;
+      justify-content: center;
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+    .dot {
+      width: 12px;
+      height: 12px;
+      background: #ffb0c3;
+      border-radius: 50%;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .dot.active-dot {
+      background: #d63e6b;
+      box-shadow: 0 0 12px #ff5982;
+      transform: scale(1.3);
+    }
+
+    /* ----- POEM SECTION (typewriter) ----- */
+    .poem-section {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  background: rgba(255, 235, 240, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 40px 40px 30px 30px;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 0 50px rgba(255, 140, 170, 0.7), 0 10px 25px #fec5d0;
+  text-align: center;
+  transition: all 0.7s;
+  /* Allow section to grow with content */
+  height: auto;
+  min-height: 300px;  /* Minimum height, but will expand */
+}
+
+.poem-text {
+  font-size: 1.3rem;
+  line-height: 2rem;
+  color: #3f2c36;
+  font-weight: 400;
+  white-space: pre-wrap;
+  border-right: 2px solid #c75679;
+  display: block;
+  animation: blinkCursor 1s step-end infinite;
+  text-align: left;
+  padding: 0.5rem 1rem;
+  /* REMOVED: max-height and overflow-y */
+  font-family: 'Quicksand', sans-serif;
+  background: rgba(255, 245, 240, 0.3);
+  border-radius: 30px;
+  width: 100%;
+}
+    .poem-text {
+      font-size: 1.65rem;
+      line-height: 2rem;
+      color: #3f2c36;
+      font-weight: 300;
+      white-space: pre-wrap;
+      border-right: 2px solid #c75679;
+      display: inline-block;
+      animation: blinkCursor 1s step-end infinite;
+    }
+
+    @keyframes blinkCursor { 50% { border-color: transparent; } }
+
+    /* final climax */
+    .climax-section {
+      text-align: center;
+      margin-top: 1rem;
+      animation: fadeGlow 2s infinite alternate;
+    }
+    @keyframes fadeGlow { from { filter: drop-shadow(0 0 6px #ffb1c7); } to { filter: drop-shadow(0 0 20px #ff4365); } }
+
+    .script-question {
+      font-family: 'Dancing Script', cursive;
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: #ac375b;
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+      animation: heartbeat 1.5s ease-in-out infinite;
+      transform-origin: center;
+    }
+    @keyframes heartbeat {
+      0% { transform: scale(1); }
+      14% { transform: scale(1.15); }
+      28% { transform: scale(1); }
+      42% { transform: scale(1.1); }
+      70% { transform: scale(1); }
+    }
+
+    .glowing-heart {
+      font-size: 5rem;
+      filter: drop-shadow(0 0 30px #ff3f6f);
+      animation: softGlow 2.2s alternate infinite;
+    }
+
+    /* interactive buttons */
+    .final-buttons {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      margin: 2rem 0 0.5rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 2rem;
+      font-weight: 600;
+      background: #ffd9e2;
+      border: none;
+      padding: 0.8rem 2.2rem;
+      border-radius: 60px;
+      box-shadow: 0 6px 0 #b34e6b, 0 10px 20px #ef9eb2;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: #751f3a;
+    }
+    .btn-yes { background: #ffb0c9; }
+    /* Enhanced maybe button runaway effect */
+.btn-maybe {
+  position: relative;
+  transition: transform 0.3s ease, background 0.3s ease;
+  will-change: transform;
+}
+
+.btn-maybe:active {
+  transform: scale(0.95);
+}
+
+/* Add a little shadow trail */
+.btn-maybe:hover {
+  box-shadow: 0 0 20px #ff9eb5, 0 6px 0 #b34e6b;
+}
+    @keyframes dodge { 0% { transform: translate(0); } 25% { transform: translate(12px, -8px); } 50% { transform: translate(-10px, 6px); } 75% { transform: translate(6px, -4px); } }
+
+    /* hidden sound option (muted autoplay disabled) */
+    .sound-control {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #8e4a61;
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    #toggleSound {
+      background: none;
+      border: 1px solid #d989a4;
+      padding: 0.3rem 1rem;
+      border-radius: 30px;
+      cursor: pointer;
+    }
+
+    /* responsive */
+    @media (max-width: 600px) {
+      .stage { padding: 1rem; }
+      .script-question { font-size: 2.6rem; }
+      .btn { font-size: 1.6rem; padding: 0.6rem 1.2rem; }
+      .greeting-card h1 { font-size: 2.8rem; }
+    }
+
+.poem-text {
+  font-size: 1.3rem;
+  line-height: 2rem;
+  color: #3f2c36;
+  font-weight: 400;
+  white-space: pre-wrap;
+  border-right: 2px solid #c75679;
+  display: block;
+  animation: blinkCursor 1s step-end infinite;
+  text-align: left;
+  padding: 0.5rem 1rem;
+  /* REMOVED: max-height and overflow-y */
+  font-family: 'Quicksand', sans-serif;
+  background: rgba(255, 245, 240, 0.3);
+  border-radius: 30px;
+  width: 100%;
+}
+}
+
+/* Make the poem section taller for 44 lines */
+.poem-section {
+  width: 100%;
+  max-width: 700px;  /* Slightly wider */
+  margin: 0 auto;
+  background: rgba(255, 235, 240, 0.6);
+  backdrop-filter: blur(10px);
+  border-radius: 60px 60px 30px 30px;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 0 40px rgba(255, 140, 170, 0.6), 0 10px 20px #fec5d0;
+  text-align: center;
+  transition: all 0.7s;
+}
+
+/* Playful tooltip */
+.btn-maybe::after {
+  content: '';
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffe2ec;
+  color: #ac375b;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.btn-maybe:hover::after {
+  opacity: 1;
+  content: '❤️ try to catch me!';
+}
+  </style>
+</head>
+<body>
+  <!-- floating hearts (generated via js) -->
+  <div id="heart-container" style="position: fixed; inset:0; pointer-events:none; z-index:1;"></div>
+
+  <div class="stage">
+    <!-- GREETING CARD (landing) -->
+    <div class="greeting-card" id="greetingCard">
+      <div class="card-front-content">
+        <div class="heart-big">❤️</div>
+        <h1>Open Me</h1>
+        <p style="color:#b34e6b; letter-spacing: 2px;">❣️</p>
+      </div>
+    </div>
+
+    <!-- MAIN JOURNEY (hidden initially) -->
+    <div class="journey-content" id="journeyContent">
+      
+      <!-- slideshow gallery -->
+      <section class="slideshow-section">
+        <div class="gallery-container" id="gallery">
+          <img src="Photos/First_photo.jpeg" class="slide-image active" alt="memory 1">
+          <img src="Photos/Second_Photo.jpeg" class="slide-image" alt="memory 2">
+          <img src="Photos/Third_Photo.jpeg" class="slide-image" alt="memory 3">
+          <img src="Photos/Fourth_Photo.jpeg" class="slide-image" alt="memory 4">
+        </div>
+        <div class="slide-dots" id="slideDots">
+          <span class="dot active-dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        </div>
+      </section>
+
+      <!-- romantic poem with typewriter -->
+      <section class="poem-section" id="poemBox">
+        <div class="poem-text" id="typewriterPoem"></div>
+      </section>
+
+      <!-- climax + buttons -->
+      <section class="climax-section">
+        <div class="script-question">Will you be my Valentine?</div>
+        <div class="glowing-heart">❤️</div>
+        <div class="final-buttons">
+          <button class="btn btn-yes" id="yesBtn">Yes 💖</button>
+          <button class="btn btn-maybe" id="maybeBtn">Maybe 😌</button>
+        </div>
+      </section>
+
+      <!-- optional sound toggle (muted autoplay disabled, user must click) -->
+      <div class="sound-control">
+        <span>🔇 soft sounds (optional)</span>
+        <button id="toggleSound">🔈 enable</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- hidden audio element (no autoplay, muted) -->
+  <audio id="bgSound" loop muted>
+    <source src="data:audio/mp3;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlIG9mIHRoZSBSYWluIGZyb20gUG9tZWdyYW5hdGUgU3R1ZGlvcy4uLgBQTEFZ细玩" type="audio/mpeg">
+    <!-- dummy base64 because real audio would be external; but we use js fallback -->
+  </audio>
+  <audio id="popSound" src="data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVoAAACAgICAf39/f39/f3+AgIAAAACAgIAAAAAAAACAgICAf39/f38="></audio>
+  <!-- ^ dummy silent placeholder, but we will use web audio api for confetti sound later (optional) -->
+
+  <script>
+    // ===== script.js =====
+    (function() {
+      // ---- floating hearts (extra touch) ----
+      const heartContainer = document.getElementById('heart-container');
+      for (let i = 0; i < 28; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'heart-particle';
+        heart.innerText = '❤️';
+        heart.style.left = Math.random() * 100 + '%';
+        heart.style.animationDelay = Math.random() * 12 + 's';
+        heart.style.fontSize = (Math.random() * 2.2 + 1) + 'rem';
+        heart.style.opacity = Math.random() * 0.3 + 0.1;
+        heartContainer.appendChild(heart);
+      }
+
+      const card = document.getElementById('greetingCard');
+      const journey = document.getElementById('journeyContent');
+      const body = document.body;
+
+      // card open (3D flip + hide)
+      card.addEventListener('click', function openCard() {
+        card.classList.add('opened');
+        setTimeout(() => {
+          card.style.display = 'none'; 
+          journey.style.display = 'flex';
+          body.classList.add('dreamy-bg');
+          startSlideShow();    // init slideshow
+          startPoemAnimation(); // typewriter poem
+        }, 600);
+      }, { once: true });
+
+      // ---------- SLIDESHOW ----------
+      const slides = document.querySelectorAll('.slide-image');
+      const dots = document.querySelectorAll('.dot');
+      let currentSlide = 0;
+      let slideInterval;
+
+      function startSlideShow() {
+        if (!slides.length) return;
+        setSlide(0);
+        slideInterval = setInterval(nextSlide, 3800);
+      }
+
+      function setSlide(index) {
+        slides.forEach((s, i) => s.classList.toggle('active', i === index));
+        dots.forEach((d, i) => d.classList.toggle('active-dot', i === index));
+        currentSlide = index;
+
+        // after last image, wait then show poem transition (already visible, but we add dreamy glow)
+        if (index === slides.length - 1) {
+          // subtle dim/glow effect: body background already dims, but we enhance poem section
+          document.querySelector('.poem-section').style.boxShadow = '0 0 80px #ffacc1';
+        } else {
+          document.querySelector('.poem-section').style.boxShadow = '0 0 40px rgba(255, 140, 170, 0.6)';
+        }
+      }
+
+      function nextSlide() {
+        let next = (currentSlide + 1) % slides.length;
+        setSlide(next);
+      }
+
+      dots.forEach((dot, idx) => {
+        dot.addEventListener('click', () => {
+          clearInterval(slideInterval);
+          setSlide(idx);
+          slideInterval = setInterval(nextSlide, 3800);
+        });
+      });
+
+      // ---------- TYPEWRITER POEM ----------
+      const poemDiv = document.getElementById('typewriterPoem');
+      const poemLines = [
+  "Had a glance on her",
+  "Standing with a turn",
+  "Uttering her marks",
+  "For 12th maths",
+  "",  // Empty line for stanza break
+  "Little did I know",
+  "I'll fall for this glow",
+  "A guy known for his brilliance",
+  "Would flatter for her radiance",
+  "",  // Empty line for stanza break
+  "Barely thought of a bond we would cultivate",
+  "Ended up being a teammate",
+  "Giving presentations with a fellowship",
+  "We watered our friendship",
+  "",  // Empty line for stanza break
+  "Somewhere between moments joy began to bloom",
+  "Sparking a love in between to groom",
+  "As moments passed, we drew closer",
+  "Sharing our secrets within our closure",
+  "",  // Empty line for stanza break
+  "A wanderer of hearts, never loved",
+  "Met someone pure as moonlight, untouched",
+  "His heart confessed what lips withheld",
+  "Fate stood between us, doors all held",
+  "",  // Empty line for stanza break
+  "When I thought all was over",
+  "Then she fell harder than I love her",
+  "When I believed the story had its end",
+  "She fell deeper than the love I Intend",
+  "",  // Empty line for stanza break
+  "She showed him love, pure and true",
+  "To a soul that never knew",
+  "Love burned bright and drew us near",
+  "Leaving us breathless, stripped of fear",
+  "",  // Empty line for stanza break
+  "In shadows deep where whispers stay,",
+  "Our hearts ignite, in the daylight whilst our play.",
+  "Moonlight trembles on tangled skin,",
+  "Dark love awakens fire within.",
+  "",  // Empty line for stanza break
+  "When the night is quiet and we're close,",
+  "Your gentle touch is what I love most.",
+  "My heart feels right when you're by my side",
+  "Will you be my Valentine?"
+];
+      let lineIndex = 0, charIndex = 0;
+      function startPoemAnimation() {
+        poemDiv.style.borderRight = '2px solid #c75679'; // cursor
+        typeNextChar();
+      }
+
+      function typeNextChar() {
+        if (lineIndex >= poemLines.length) {
+          poemDiv.style.borderRight = 'none';
+          return;
+        }
+        if (charIndex === 0) {
+          if (lineIndex > 0) poemDiv.innerHTML += '<br>';
+        }
+        const currentLine = poemLines[lineIndex];
+        if (charIndex < currentLine.length) {
+          poemDiv.innerHTML += currentLine.charAt(charIndex);
+          charIndex++;
+          setTimeout(typeNextChar, 70);
+        } else {
+          lineIndex++;
+          charIndex = 0;
+          setTimeout(typeNextChar, 400);
+        }
+      }
+
+      // ---------- CONFETTI on YES (simple canvas confetti) ----------
+      const yesBtn = document.getElementById('yesBtn');
+      yesBtn.addEventListener('click', () => {
+        launchConfetti();
+        // optional tiny sound effect (if enabled)
+        if (soundEnabled) playPop();
+      });
+
+// ---------- ENHANCED CONFETTI + FULL SCREEN HEARTS ----------
+function launchConfetti() {
+  // Create 150 hearts filling the entire screen
+  for (let i = 0; i < 150; i++) {
+    setTimeout(() => {
+      const heart = document.createElement('div');
+      heart.innerHTML = ['❤️', '💖', '💕', '💗', '💓', '🌸', '✨'][Math.floor(Math.random() * 7)];
+      heart.style.position = 'fixed';
+      heart.style.left = Math.random() * 100 + '%';
+      heart.style.top = '-10px';
+      heart.style.fontSize = (Math.random() * 30 + 20) + 'px';
+      heart.style.color = ['#ff3366', '#ff6b95', '#ff99aa', '#ff4466'][Math.floor(Math.random() * 4)];
+      heart.style.pointerEvents = 'none';
+      heart.style.zIndex = 9999;
+      heart.style.opacity = Math.random() * 0.8 + 0.3;
+      heart.style.transform = `rotate(${Math.random() * 30 - 15}deg)`;
+      heart.style.animation = `floatDown ${Math.random() * 3 + 2}s linear forwards`;
+      heart.style.filter = 'drop-shadow(0 0 10px #ff69b4)';
+      document.body.appendChild(heart);
+      
+      // Remove after animation
+      setTimeout(() => heart.remove(), 5000);
+    }, i * 20); // Staggered appearance
+  }
+  
+  // Add floating animation if not exists
+  if (!document.querySelector('#heartFloatStyle')) {
+    const style = document.createElement('style');
+    style.id = 'heartFloatStyle';
+    style.innerHTML = `
+      @keyframes floatDown {
+        0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+        100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+  
+  // Play pop sound if enabled
+  if (soundEnabled) playPop();
+  
+  // Add a romantic surprise - change background temporarily
+  document.body.style.transition = 'background 2s';
+  document.body.style.background = 'radial-gradient(circle at 50% 50%, #ffd9e8, #ffb6c1, #ff69b4)';
+  setTimeout(() => {
+    document.body.style.background = ''; // Revert to original
+  }, 3000);
+}
+// ---------- ENHANCED MAYBE BUTTON - RUNS AWAY FROM CURSOR ----------
+const maybeBtn = document.getElementById('maybeBtn');
+let maybeClickCount = 0;
+
+// Make button flee from mouse
+maybeBtn.addEventListener('mouseover', function(e) {
+  // Get button position and viewport dimensions
+  const btnRect = this.getBoundingClientRect();
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+  
+  // Calculate new position - move away from cursor
+  const cursorX = e.clientX;
+  const cursorY = e.clientY;
+  const btnCenterX = btnRect.left + btnRect.width / 2;
+  const btnCenterY = btnRect.top + btnRect.height / 2;
+  
+  // Determine direction to move (opposite of cursor)
+  let moveX = 0, moveY = 0;
+  
+  if (cursorX < btnCenterX) {
+    // Cursor is left of button, move right
+    moveX = Math.min(viewportWidth - btnRect.right - 20, 150);
+  } else {
+    // Cursor is right of button, move left
+    moveX = -Math.min(btnRect.left - 20, 150);
+  }
+  
+  if (cursorY < btnCenterY) {
+    // Cursor is above button, move down
+    moveY = Math.min(viewportHeight - btnRect.bottom - 20, 100);
+  } else {
+    // Cursor is below button, move up
+    moveY = -Math.min(btnRect.top - 20, 100);
+  }
+  
+  // Apply the movement with smooth transition
+  this.style.transition = 'transform 0.3s ease';
+  this.style.transform = `translate(${moveX}px, ${moveY}px)`;
+  
+  // Add a playful "nope" message occasionally
+  if (Math.random() > 0.7) {
+    const messages = ['😅 not yet!', '🥺 try yes?', '💕 over here!', '✨ catch me!', '❤️ choose yes!'];
+    const oldText = this.innerText;
+    this.innerText = messages[Math.floor(Math.random() * messages.length)];
+    setTimeout(() => {
+      this.innerText = 'Maybe 😌';
+    }, 800);
+  }
+});
+
+// Reset position when mouse leaves the button area
+maybeBtn.addEventListener('mouseleave', function() {
+  this.style.transform = 'translate(0, 0)';
+});
+
+// Playful click behavior
+maybeBtn.addEventListener('click', function() {
+  maybeClickCount++;
+  
+  if (maybeClickCount === 1) {
+    alert('💕 Are you sure? Try again!');
+  } else if (maybeClickCount === 2) {
+    alert('🥺 The yes button misses you!');
+  } else if (maybeClickCount === 3) {
+    alert('❤️ Last chance to say Yes!');
+  } else if (maybeClickCount >= 4) {
+    // After 4 clicks, force the button to turn into Yes
+    this.innerText = 'Yes 💖';
+    this.classList.remove('btn-maybe');
+    this.classList.add('btn-yes');
+    setTimeout(() => {
+      launchConfetti();
+    }, 100);
+    
+    // Reset after confetti
+    setTimeout(() => {
+      this.innerText = 'Maybe 😌';
+      this.classList.remove('btn-yes');
+      this.classList.add('btn-maybe');
+      maybeClickCount = 0;
+    }, 5000);
+  }
+});
+
+// Also make it run away on touch for mobile
+maybeBtn.addEventListener('touchstart', function(e) {
+  e.preventDefault();
+  const randomX = Math.random() * 200 - 100;
+  const randomY = Math.random() * 200 - 100;
+  this.style.transition = 'transform 0.3s ease';
+  this.style.transform = `translate(${randomX}px, ${randomY}px)`;
+});
+
+      // ---------- SOUND TOGGLE (muted disabled, user must enable) ----------
+      let soundEnabled = false;
+      const toggleBtn = document.getElementById('toggleSound');
+      toggleBtn.addEventListener('click', () => {
+        soundEnabled = !soundEnabled;
+        toggleBtn.innerText = soundEnabled ? '🔊 enabled' : '🔈 enable';
+        if (soundEnabled) {
+          // dummy — we don't have real audio, but we simulate a soft ambient using web audio (optional)
+          // we just show a tiny console message.
+          console.log('sound effects enabled (confetti pop)');
+        }
+      });
+
+      function playPop() {
+        if (!soundEnabled) return;
+        // create a very short beep using web audio (simple)
+        try {
+          const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const oscillator = audioCtx.createOscillator();
+          const gainNode = audioCtx.createGain();
+          oscillator.connect(gainNode);
+          gainNode.connect(audioCtx.destination);
+          oscillator.frequency.value = 620;
+          gainNode.gain.value = 0.1;
+          oscillator.start();
+          oscillator.stop(audioCtx.currentTime + 0.08);
+        } catch (e) {}
+      }
+
+      // climax extra heartbeat (already in css)
+      // after last slide we already have glow
+
+      // Also if user clicks dot to last, we want poem to be highlighted
+      // ensures smooth last image → poem connection
+      // trigger after 4th slide active? we already set glow in setSlide.
+
+      // pre-show poem box with typewriter only after card open. but poem starts with first image, fine.
+    })();
+  </script>
+</body>
+</html>
